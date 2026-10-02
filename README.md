@@ -25,6 +25,10 @@ npm run dev
 npm run build
 ```
 
+## Contributing
+
+See [the branching strategy](docs/branching-strategy.md) for branch naming, pull request, and merge guidelines.
+
 ## Notes
 
 This project is intentionally designed as a static client-side app for GitHub Pages, Cloudflare Pages, or Vercel static hosting. The core analysis runs entirely in the browser and does not require a backend or database.
