@@ -20,6 +20,11 @@ function App() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [viewMode, setViewMode] = useState<'visual' | 'parser'>('visual')
   const [refreshKey, setRefreshKey] = useState(0)
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null)
+
+  const canAnalyze = resumeText.trim().length > 0 && !isProcessing
+  const hasJobDescription = jobDescription.trim().length > 0
+  const workflowStep = uploadedFileName ? (hasJobDescription ? 3 : 2) : 1
 
   const analysis = useMemo(() => {
     void refreshKey
@@ -49,12 +54,16 @@ function App() {
 
   const handleAnalyze = () => {
     setRefreshKey((current) => current + 1)
+    window.setTimeout(() => {
+      document.getElementById('inspection-console')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 80)
   }
 
   const handleSampleResume = () => {
     setResumeText(sampleResume)
     setJobDescription(sampleJobDescription)
     setReviewMode('job')
+    setUploadedFileName('Sample resume loaded')
     setError(null)
   }
 
@@ -78,6 +87,7 @@ function App() {
     try {
       const extracted = await extractTextFromFile(file)
       setResumeText(extracted || 'No text detected in the uploaded file.')
+      setUploadedFileName(file.name)
     } catch (loadError) {
       setError(
         loadError instanceof Error
@@ -124,18 +134,57 @@ function App() {
       <main>
         <section className="hero-section">
           <div className="hero-copy">
-            <h1>See what your resume says before an ATS does.</h1>
+            <h1>Resume review</h1>
             <p>
-              Upload a resume or paste your text. If you have a job description, paste it too for a tighter ATS match check.
+              Upload a resume or paste it below. If you have a target role, paste the job description too for a direct ATS match check.
             </p>
 
             <div className="cta-row">
               <button type="button" className="primary-button" onClick={() => document.getElementById('resume-upload')?.click()}>
                 Upload resume
               </button>
-              <button type="button" className="secondary-button" onClick={() => window.scrollTo({ top: 780, behavior: 'smooth' })}>
-                View report
+              <button
+                type="button"
+                className="primary-button accent-button"
+                onClick={handleAnalyze}
+                disabled={!canAnalyze}
+                title={canAnalyze ? 'Generate the ATS review report' : 'Upload or paste a resume to enable analysis'}
+              >
+                {isProcessing ? 'Reading file…' : 'Analyze now'}
               </button>
+            </div>
+
+            <div className="workflow-card" aria-live="polite">
+              <div className="workflow-header">
+                <span className="eyebrow">3-step workflow</span>
+                <strong>{workflowStep}/3</strong>
+              </div>
+
+              <div className="workflow-steps">
+                <div className={`workflow-step ${uploadedFileName ? 'done' : 'active'}`}>
+                  <span className="step-badge">1</span>
+                  <div>
+                    <strong>Upload resume</strong>
+                    <small>{uploadedFileName ? `Loaded: ${uploadedFileName}` : 'PDF, DOCX, or TXT'}</small>
+                  </div>
+                </div>
+
+                <div className={`workflow-step ${hasJobDescription ? 'done' : 'pending'}`}>
+                  <span className="step-badge">2</span>
+                  <div>
+                    <strong>Paste job description</strong>
+                    <small>{hasJobDescription ? 'JD added for matching' : 'Optional but recommended'}</small>
+                  </div>
+                </div>
+
+                <div className={`workflow-step ${canAnalyze ? 'active' : 'pending'}`}>
+                  <span className="step-badge">3</span>
+                  <div>
+                    <strong>Analyze</strong>
+                    <small>{canAnalyze ? 'Ready to generate report' : 'Upload or paste a resume first'}</small>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <label className="upload-box compact-upload" htmlFor="resume-upload">
@@ -149,6 +198,25 @@ function App() {
               <span className="upload-meta">PDF • DOCX • TXT</span>
               <span className="upload-helper"><strong>Optional:</strong> paste the role brief below to compare your CV against the job.</span>
             </label>
+
+            <div className={`upload-status ${uploadedFileName ? 'ready' : ''}`} role="status" aria-live="polite">
+              {isProcessing ? (
+                <>
+                  <strong>Reading file…</strong>
+                  <span>We are extracting text from your resume.</span>
+                </>
+              ) : uploadedFileName ? (
+                <>
+                  <strong>Resume loaded:</strong> {uploadedFileName}
+                  <span>Click “Analyze now” to generate the ATS report.</span>
+                </>
+              ) : (
+                <>
+                  <strong>Step 1:</strong> upload or paste a resume
+                  <span>Then click “Analyze now” to review the ATS fit.</span>
+                </>
+              )}
+            </div>
           </div>
 
           <div className="inspection-demo">
@@ -216,7 +284,7 @@ function App() {
 
               <div className="action-row">
                 <button type="button" className="primary-button" onClick={handleAnalyze} disabled={isProcessing}>
-                  {isProcessing ? 'Analyzing…' : 'Analyze now'}
+                  {isProcessing ? 'Reading file…' : 'Analyze now'}
                 </button>
                 <button type="button" className="secondary-button" onClick={handleSampleResume}>
                   Load sample

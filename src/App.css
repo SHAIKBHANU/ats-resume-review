@@ -185,6 +185,18 @@ a:focus-visible {
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1.5rem;
+  align-items: center;
+}
+
+.accent-button {
+  box-shadow: 0 16px 28px rgba(13, 138, 124, 0.2);
+}
+
+.accent-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .inspection-demo {
@@ -347,6 +359,109 @@ a:focus-visible {
 .upload-helper strong {
   color: #0f172a;
   font-weight: 800;
+}
+
+.workflow-card {
+  margin-top: 1.4rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.04);
+}
+
+.workflow-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.8rem;
+}
+
+.workflow-header strong {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0b5f57;
+}
+
+.workflow-steps {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.workflow-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.7rem;
+  border-radius: 0.8rem;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(148, 163, 184, 0.04);
+}
+
+.workflow-step.active {
+  border-color: rgba(13, 138, 124, 0.22);
+  background: rgba(13, 138, 124, 0.06);
+}
+
+.workflow-step.done {
+  border-color: rgba(34, 197, 94, 0.2);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.workflow-step.pending {
+  opacity: 0.72;
+}
+
+.step-badge {
+  display: grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  background: #0f172a;
+  color: #f8fafc;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.workflow-step strong {
+  display: block;
+  font-size: 0.82rem;
+  color: #0f172a;
+}
+
+.workflow-step small {
+  display: block;
+  color: #475569;
+  margin-top: 0.15rem;
+}
+
+.upload-status {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.9rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 0.8rem;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(148, 163, 184, 0.08);
+  color: #334155;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.upload-status.ready {
+  border-color: rgba(13, 138, 124, 0.24);
+  background: rgba(13, 138, 124, 0.08);
+  color: #0b5f57;
+}
+
+.upload-status strong {
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .editor-grid {
@@ -814,6 +929,34 @@ input:focus {
   .results-grid,
   .footer-grid,
   .editor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-section {
+    padding-top: 1rem;
+  }
+
+  .topbar {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .results-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .score-matrix {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .footer-grid,
+  .editor-grid,
+  .hero-section,
+  .console-shell,
+  .results-grid {
     grid-template-columns: 1fr;
   }
 
