@@ -1,0 +1,17 @@
+{
+  "name": "ResumeLens",
+  "short_name": "ResumeLens",
+  "description": "Privacy-first ATS resume analysis and job-fit review in the browser.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f3ee",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
