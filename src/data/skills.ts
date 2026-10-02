@@ -87,7 +87,7 @@ B.S. in Computer Science, University of Colorado Boulder
 
 CERTIFICATIONS
 AWS Certified Developer – Associate
-` 
+`
 
 export const sampleJobDescription = `
 We are hiring a Senior Platform Engineer to build secure, scalable deployment systems and improve reliability for critical platform services.
@@ -101,4 +101,4 @@ Responsibilities:
 
 Required skills:
 Kubernetes, AWS, Terraform, CI/CD, SRE, observability, GitHub Actions, Docker
-` 
+`
