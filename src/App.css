@@ -31,6 +31,14 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
 }
 
 .brand-mark {
@@ -47,30 +55,67 @@
 }
 
 .brand-name {
-  font-size: 1.08rem;
-  font-weight: 800;
-  letter-spacing: -0.05em;
+  font-size: 1.38rem;
+  font-weight: 700;
+  letter-spacing: 0;
   color: #0f172a;
 }
 
 .brand-tag {
   font-size: 0.68rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #526579;
+  font-weight: 700;
 }
 
-.nav {
+.review-actions {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
-  color: #475569;
+  gap: 0.4rem;
+  padding: 0.3rem;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.66);
 }
 
-.nav-link {
-  font-size: 0.82rem;
-  color: #475569;
-  text-decoration: none;
+.review-action {
+  min-height: 2.75rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.65rem;
+  background: transparent;
+  color: #334155;
+  font: inherit;
+  font-size: 0.83rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+}
+
+.review-action:hover {
+  background: rgba(13, 138, 124, 0.08);
+  color: #075e56;
+}
+
+.review-action.selected {
+  background: #0f172a;
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.16);
+}
+
+.review-action:active,
+.primary-button:active,
+.secondary-button:active,
+.toggle-button:active {
+  transform: scale(0.97);
+}
+
+.review-action:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(13, 138, 124, 0.42);
+  outline-offset: 3px;
 }
 
 .primary-button,
@@ -108,35 +153,24 @@
 .hero-section {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
-  align-items: center;
+  align-items: start;
   gap: 2rem;
-  padding: 3rem 0 1.5rem;
+  padding: 1.25rem 0 1.5rem;
 }
 
 .hero-copy {
   max-width: 620px;
 }
 
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.45rem 0.8rem;
-  border-radius: 999px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  background: rgba(255, 255, 255, 0.7);
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #3d4c5d;
-}
-
 .hero-copy h1 {
-  margin: 1.25rem 0 1rem;
-  font-size: clamp(2.8rem, 4vw, 5rem);
-  line-height: 0.96;
-  letter-spacing: -0.07em;
+  margin: 0.35rem 0 1rem;
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(3rem, 5vw, 5.2rem);
+  line-height: 1.02;
+  letter-spacing: 0;
   color: #0f172a;
+  text-wrap: balance;
 }
 
 .hero-copy p {
@@ -151,24 +185,6 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1.5rem;
-}
-
-.trust-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.7rem;
-  margin-top: 1.25rem;
-}
-
-.trust-row span {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.45rem 0.8rem;
-  border-radius: 999px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  background: rgba(255, 255, 255, 0.8);
-  color: #334155;
-  font-size: 0.8rem;
 }
 
 .inspection-demo {
@@ -228,6 +244,7 @@
 .console-section {
   padding-bottom: 1rem;
   padding-top: 0.6rem;
+  scroll-margin-top: 6rem;
 }
 
 .console-shell {
@@ -271,7 +288,7 @@
   margin-top: 0.35rem;
   font-size: clamp(1.5rem, 2vw, 2rem);
   line-height: 1.2;
-  letter-spacing: -0.05em;
+  letter-spacing: 0;
 }
 
 .eyebrow {
@@ -316,10 +333,30 @@
   color: #64748b;
 }
 
+.upload-helper {
+  font-size: 0.72rem;
+  color: #475569;
+  line-height: 1.5;
+  max-width: 24rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.03);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.upload-helper strong {
+  color: #0f172a;
+  font-weight: 800;
+}
+
 .editor-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+}
+
+.editor-grid.single-field {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .field-panel {
@@ -328,11 +365,47 @@
   gap: 0.6rem;
 }
 
+.field-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
 .field-panel label {
   font-size: 0.72rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #64748b;
+}
+
+.optional-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.24rem 0.58rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(13, 138, 124, 0.12), rgba(148, 163, 184, 0.12));
+  color: #0d5b55;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid rgba(13, 138, 124, 0.18);
+}
+
+.required-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.24rem 0.58rem;
+  border: 1px solid rgba(13, 138, 124, 0.2);
+  border-radius: 999px;
+  background: rgba(13, 138, 124, 0.09);
+  color: #075e56;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 textarea {
@@ -428,7 +501,7 @@ textarea {
 
 .score-ring-inner strong {
   font-size: 2.5rem;
-  letter-spacing: -0.06em;
+  letter-spacing: 0;
 }
 
 .score-ring-inner span {
@@ -531,7 +604,7 @@ textarea {
   display: block;
   margin-top: 0.35rem;
   font-size: 1.5rem;
-  letter-spacing: -0.06em;
+  letter-spacing: 0;
 }
 
 .meter {
@@ -686,6 +759,21 @@ textarea {
   padding: 1.5rem 0 2.5rem;
 }
 
+.footer-banner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #3d4c5d;
+}
+
 .footer-grid {
   display: grid;
   grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
@@ -730,7 +818,7 @@ input:focus {
   }
 
   .hero-section {
-    padding-top: 2.5rem;
+    padding-top: 1rem;
   }
 
   .topbar {
@@ -749,8 +837,16 @@ input:focus {
 }
 
 @media (max-width: 640px) {
-  .nav {
-    display: none;
+  .review-actions {
+    width: 100%;
+  }
+
+  .review-action {
+    flex: 1;
+    min-width: 0;
+    padding: 0.55rem 0.4rem;
+    font-size: 0.72rem;
+    line-height: 1.25;
   }
 
   .score-matrix,

@@ -3,8 +3,6 @@ import { analyzeResume, extractTextFromFile, getBannerCopy } from './lib/analysi
 import { sampleJobDescription, sampleResume } from './data/skills'
 import './App.css'
 
-const pageLinks = ['Home', 'Inspect', 'Fixes', 'Privacy']
-
 const scoreBreakdownLabels = [
   { key: 'parsingSafety', label: 'Parsing safety' },
   { key: 'jobAlignment', label: 'Job alignment' },
@@ -16,7 +14,8 @@ const scoreBreakdownLabels = [
 
 function App() {
   const [resumeText, setResumeText] = useState(sampleResume)
-  const [jobDescription, setJobDescription] = useState(sampleJobDescription)
+  const [jobDescription, setJobDescription] = useState('')
+  const [reviewMode, setReviewMode] = useState<'resume' | 'job'>('resume')
   const [error, setError] = useState<string | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [viewMode, setViewMode] = useState<'visual' | 'parser'>('visual')
@@ -24,8 +23,8 @@ function App() {
 
   const analysis = useMemo(() => {
     void refreshKey
-    return analyzeResume(resumeText, jobDescription)
-  }, [resumeText, jobDescription, refreshKey])
+    return analyzeResume(resumeText, reviewMode === 'job' ? jobDescription : '')
+  }, [resumeText, jobDescription, refreshKey, reviewMode])
 
   const scoreStatus = useMemo(() => {
     if (analysis.readinessScore >= 80) {
@@ -55,7 +54,16 @@ function App() {
   const handleSampleResume = () => {
     setResumeText(sampleResume)
     setJobDescription(sampleJobDescription)
+    setReviewMode('job')
     setError(null)
+  }
+
+  const handleReviewMode = (mode: 'resume' | 'job') => {
+    setReviewMode(mode)
+    document.getElementById('inspection-console')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    window.setTimeout(() => {
+      document.getElementById(mode === 'job' ? 'job-description' : 'resume-paste')?.focus()
+    }, 350)
   }
 
   const handleUpload = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -82,42 +90,43 @@ function App() {
     }
   }
 
-  const scrollToConsole = () => {
-    const node = document.getElementById('inspection-console')
-    node?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
   return (
     <div className="page-shell">
-      <header className="topbar">
-        <div className="brand-block">
+      <header className="topbar" id="top">
+        <a href="#top" className="brand-block" aria-label="Go to home page">
           <div className="brand-mark" aria-hidden="true">AR</div>
-          <div>
-            <div className="brand-name">ATSReview.in</div>
-            <div className="brand-tag">ATS Resume Review</div>
+          <div className="brand-copy">
+            <div className="brand-name">ATS Review</div>
+            <div className="brand-tag">ATS checker</div>
           </div>
+        </a>
+
+        <div className="review-actions" role="group" aria-label="Choose a resume review">
+          <button
+            type="button"
+            className={`review-action ${reviewMode === 'resume' ? 'selected' : ''}`}
+            aria-pressed={reviewMode === 'resume'}
+            onClick={() => handleReviewMode('resume')}
+          >
+            Inspect resume
+          </button>
+          <button
+            type="button"
+            className={`review-action ${reviewMode === 'job' ? 'selected' : ''}`}
+            aria-pressed={reviewMode === 'job'}
+            onClick={() => handleReviewMode('job')}
+          >
+            Inspect resume against JD
+          </button>
         </div>
-
-        <nav className="nav" aria-label="Main navigation">
-          {pageLinks.map((link) => (
-            <a key={link} href="#" className="nav-link">
-              {link}
-            </a>
-          ))}
-        </nav>
-
-        <button type="button" className="primary-button" onClick={scrollToConsole}>
-          Inspect my resume
-        </button>
       </header>
 
       <main>
         <section className="hero-section">
           <div className="hero-copy">
-            <div className="pill">Free • private • browser-based</div>
             <h1>See what your resume says before an ATS does.</h1>
             <p>
-              Upload a resume or paste your text, then review your match score and ATS issues immediately.
+              Upload a resume or paste your text. If you have a job description, paste it too for a tighter ATS match check.
             </p>
 
             <div className="cta-row">
@@ -129,12 +138,6 @@ function App() {
               </button>
             </div>
 
-            <div className="trust-row">
-              <span>Free</span>
-              <span>PDF / DOCX / TXT</span>
-              <span>Browser only</span>
-            </div>
-
             <label className="upload-box compact-upload" htmlFor="resume-upload">
               <input
                 id="resume-upload"
@@ -142,8 +145,9 @@ function App() {
                 accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
                 onChange={handleUpload}
               />
-              <span className="upload-title">Choose a resume file</span>
+              <span className="upload-title">Upload resume</span>
               <span className="upload-meta">PDF • DOCX • TXT</span>
+              <span className="upload-helper"><strong>Optional:</strong> paste the role brief below to compare your CV against the job.</span>
             </label>
           </div>
 
@@ -161,7 +165,7 @@ function App() {
             <div className="demo-summary">
               <div>
                 <span className="mono-label">Role</span>
-                <strong>{jobDescription.trim() ? 'Custom role' : 'Platform Engineer'}</strong>
+                <strong>{reviewMode === 'job' ? 'Job description match' : 'Resume only'}</strong>
               </div>
               <div>
                 <span className="mono-label">Strong matches</span>
@@ -183,7 +187,7 @@ function App() {
                 <h2>Review details</h2>
               </div>
 
-              <div className="editor-grid">
+              <div className={`editor-grid ${reviewMode === 'resume' ? 'single-field' : ''}`}>
                 <div className="field-panel">
                   <label htmlFor="resume-paste">Resume</label>
                   <textarea
@@ -194,15 +198,20 @@ function App() {
                   />
                 </div>
 
-                <div className="field-panel">
-                  <label htmlFor="job-description">Target job description</label>
-                  <textarea
-                    id="job-description"
-                    value={jobDescription}
-                    onChange={(event) => setJobDescription(event.target.value)}
-                    placeholder="Paste the job description you are targeting..."
-                  />
-                </div>
+                {reviewMode === 'job' ? (
+                  <div className="field-panel">
+                    <div className="field-header">
+                      <label htmlFor="job-description">Target job description</label>
+                      <span className="required-pill">For job match</span>
+                    </div>
+                    <textarea
+                      id="job-description"
+                      value={jobDescription}
+                      onChange={(event) => setJobDescription(event.target.value)}
+                      placeholder="Paste the job description you are targeting..."
+                    />
+                  </div>
+                ) : null}
               </div>
 
               <div className="action-row">
@@ -250,7 +259,7 @@ function App() {
             </div>
             <div className="target-block">
               <span className="muted-tag">Target role</span>
-              <strong>{jobDescription.trim() ? 'Custom role match' : 'Platform Engineer'}</strong>
+              <strong>{reviewMode === 'job' ? 'Job description match' : 'Resume only'}</strong>
             </div>
           </div>
 
@@ -344,9 +353,10 @@ function App() {
       </main>
 
       <footer className="site-footer">
+        <div className="footer-banner">Free • private • browser-based</div>
         <div className="footer-grid">
           <div>
-            <div className="brand-name">ATSReview.in</div>
+            <div className="brand-name">ATS Review</div>
             <p>Review your resume before the ATS does.</p>
           </div>
           <div>
